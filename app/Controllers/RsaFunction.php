@@ -2,10 +2,10 @@
 
 namespace App\Controllers;
 
-class Welcome extends BaseController
+class RsaFunction extends BaseController
 {
     public function index() {
-        return view('welcome');
+        return view('rsa_function');
         // $res = array(
         //     'name' => 'ars',
         //     'name2' => 'shaikh',
