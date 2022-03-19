@@ -49,13 +49,13 @@ class RsaFunction extends BaseController
             foreach ($str as $key => $char) {
                 if(ctype_upper($char)) {
                     $m = ord($char)-65;
-                    echo "m = $m";
+                    // echo "m = $m";
                     $enc[] = $m;
                     // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
                 }
                 else if(ctype_lower($char)) {
                     $m = ord($char)-97;
-                    echo "m = $m";
+                    // echo "m = $m";
                     $enc[] = $m;
                     // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
                     // $enc[] = ($m**$e)%$n;
@@ -75,6 +75,68 @@ class RsaFunction extends BaseController
                 "Private Key" => "($d,$n)",
                 "Public Key" => "($e,$n)",
                 "Encrypted Values" => $enc
+            ];
+        }
+
+        header('Content-Type: application/json');
+        return json_encode( $output );
+    }
+    
+    public function decrypt($a, $b, $text) {
+
+        // smaller
+        $p = $a > $b ? $b: $a;
+        // larger
+        $q = $a > $b ? $a: $b;
+
+        $output = array();
+
+        if(!$this->primeCheck($p) || !$this->primeCheck($q)) {
+            $output[] = "---- Not Prime Number ----";
+        }
+        else if(abs($p-$q)<5) {
+            $output[] = "---- Choose different Numbers ----";
+        }
+        else {
+            
+            // RSA Modulus
+            $n = $p * $q;
+            // Eulers Toitent
+            $r = ($p-1)*($q-1);
+
+            $e = $this->e_value($r);
+            $d = $this->multiplicative_inverse($e,$r);
+            $values = explode(',', $text);
+
+            // remove non numeric values
+            $values = array_filter($values,function($var) {
+                return(is_numeric($var));
+            });
+
+            $public_key = [$e,$n];
+            $private_key = [$d,$n];
+            
+            $dec_msg = '';
+            $m = 0;
+            foreach ($values as $key => $val) {
+                if($val==400) {
+                    $dec_msg = $dec_msg.' ';
+                }
+                else {
+                    $dec_msg = $dec_msg.chr($val+65);
+                }
+            }
+
+            $output[] = [
+                "P" => $p,
+                "Q" => $q,
+                "Values" => $values,
+                "RSA modulus(n)" => $n,
+                "Eulers Toitent(r)" => $r,
+                "e" => $e,
+                "Private Key" => "($d,$n)",
+                "Public Key" => "($e,$n)",
+                "Decrypted_message" => $dec_msg
             ];
         }
 
@@ -144,6 +206,6 @@ class RsaFunction extends BaseController
             return gmp_strval(gmp_mod( (int)$s, (int)$r ));
         }
     }
-    
+
 
 }
