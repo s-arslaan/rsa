@@ -6,13 +6,6 @@ class RsaFunction extends BaseController
 {
     public function index() {
         return view('rsa_function');
-        // $res = array(
-        //     'name' => 'ars',
-        //     'name2' => 'shaikh',
-        //     'city' => 'ahmedabad'
-        // );
-        // header('Content-Type: application/json');
-        // return json_encode( $res );
     }
     
     public function encrypt($a, $b, $text) {
@@ -215,6 +208,7 @@ class RsaFunction extends BaseController
         }
     }
 
+    // NOT IN USE
     protected function encrypt_decrypt($action, $string, $key) {
         $output = false;
         $encrypt_method = "AES-128-CTR";
