@@ -41,24 +41,30 @@ class RsaFunction extends BaseController
             $d = $this->multiplicative_inverse($e,$r);
             $str = str_split($text);
 
-            $public_key = [$e,$n];
+            $public_key = [$e,$n,'asdsssssadfsfsdfaeawefasfcsdcasdfsdfasf'];
             $private_key = [$d,$n];
             
             $enc = array();
             $m = 0;
+            $enc_value = null;
             foreach ($str as $key => $char) {
                 if(ctype_upper($char)) {
                     $m = ord($char)-65;
-                    // echo "m = $m";
-                    $enc[] = $m;
-                    // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
+                    // echo ($m**$e)%$n."  ";
+                    $enc[] = ($m**$e)%$n;
+                    // openssl_public_encrypt($m,$enc_value,$public_key);
+                    // $enc[] = $enc_value;
+                    // $enc[] = $this->encrypt_decrypt('encrypt',$m,$public_key);
                 }
                 else if(ctype_lower($char)) {
                     $m = ord($char)-97;
-                    // echo "m = $m";
-                    $enc[] = $m;
+                    $enc[] = ($m**$e)%$n;
+                    // echo ($m**$e)%$n."  ";
                     // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
-                    // $enc[] = ($m**$e)%$n;
+                    // openssl_public_encrypt($m,$enc_value,$public_key);
+                    // $enc[] = $enc_value;
+                    // $enc[] = $this->encrypt_decrypt('encrypt',$m,$public_key);
+                    // $enc[] = $m;
                 }
                 else if(ctype_space($char)) {
                     $enc[] = 400;
@@ -123,7 +129,9 @@ class RsaFunction extends BaseController
                     $dec_msg = $dec_msg.' ';
                 }
                 else {
-                    $dec_msg = $dec_msg.chr($val+65);
+                    $m = ((int)$val ** $d )%$n;
+                    $m+=65;
+                    $dec_msg = $dec_msg.chr($m);
                 }
             }
 
@@ -168,16 +176,17 @@ class RsaFunction extends BaseController
     }
     
     protected function e_value($r) {
-        // FINDS THE HIGHEST POSSIBLE VALUE OF 'e' BETWEEN 1 and 1000 THAT MAKES (e,r) COPRIME
+        // FINDS THE HIGHEST POSSIBLE VALUE OF 'e' BETWEEN 1 and 10 THAT MAKES (e,r) COPRIME
         $e = 0;
-        for ($i=1; $i < 1000 ; $i++) { 
-            if($this->euclid_gcd($i,$r) === 1)
+        for ($i=1; $i < 10 ; $i++) { 
+            if($this->euclid_gcd($i,$r) === 1) {
                 $e=$i;
+            }
         }
         return $e;
     }
 
-    public function extended_euclid_gcd($a, $b) {
+    protected function extended_euclid_gcd($a, $b) {
         if($a%$b == 0) {
             // echo "b=$b, s=0, t=1<br>";
             return [$b,0,1];
@@ -191,7 +200,7 @@ class RsaFunction extends BaseController
         // verify using as + bt = gcd(a,b)
     }
 
-    public function multiplicative_inverse($e, $r) {
+    protected function multiplicative_inverse($e, $r) {
 
         [$gcd,$s,$t] = $this->extended_euclid_gcd($e,$r);
         if($gcd!=1)
@@ -202,9 +211,22 @@ class RsaFunction extends BaseController
             // elif(s>0):
             //     print("s=%d."%(s))
             // echo "s=$s, s%r = $s%$r = ".gmp_mod($s,$r);
-            // die(gmp_strval(gmp_mod($s,$r))); //it is s%r
             return gmp_strval(gmp_mod( (int)$s, (int)$r ));
         }
+    }
+
+    protected function encrypt_decrypt($action, $string, $key) {
+        $output = false;
+        $encrypt_method = "AES-128-CTR";
+        $secret_iv = '1234567890123456';
+        $iv = substr($secret_iv,0,16);
+        if($action=='encrypt') {
+            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+            $output = base64_encode($output);
+        } else if ($action=='decrypt') {
+            $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+        }
+        return $output;
     }
 
 
