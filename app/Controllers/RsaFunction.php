@@ -31,6 +31,7 @@ class RsaFunction extends BaseController
             $output[] = "---- Choose different Numbers ----";
         }
         else {
+            
             // RSA Modulus
             $n = $p * $q;
             // Eulers Toitent
@@ -38,7 +39,7 @@ class RsaFunction extends BaseController
 
             $e = $this->e_value($r);
             $d = $this->multiplicative_inverse($e,$r);
-            $str = str_split(strtoupper($text));
+            $str = str_split($text);
 
             $public_key = [$e,$n];
             $private_key = [$d,$n];
@@ -48,17 +49,26 @@ class RsaFunction extends BaseController
             foreach ($str as $key => $char) {
                 if(ctype_upper($char)) {
                     $m = ord($char)-65;
-                    $enc[] = pow($m, $e)%$n;
+                    echo "m = $m";
+                    $enc[] = $m;
+                    // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
                 }
                 else if(ctype_lower($char)) {
                     $m = ord($char)-97;
-                    $enc[] = pow($m, $e)%$n;
+                    echo "m = $m";
+                    $enc[] = $m;
+                    // $enc[] = gmp_mod(((int)$m ** (int)$e),(int)$n);
+                    // $enc[] = ($m**$e)%$n;
                 }
-                else if(ctype_space($char))
+                else if(ctype_space($char)) {
                     $enc[] = 400;
+                }
             }
 
             $output[] = [
+                "P" => $p,
+                "Q" => $q,
+                "Message" => $str,
                 "RSA modulus(n)" => $n,
                 "Eulers Toitent(r)" => $r,
                 "e" => $e,
@@ -105,28 +115,34 @@ class RsaFunction extends BaseController
         return $e;
     }
 
-    protected function extended_euclid_gcd($a, $b) {
-        if($a%$b==0)
+    public function extended_euclid_gcd($a, $b) {
+        if($a%$b == 0) {
+            // echo "b=$b, s=0, t=1<br>";
             return [$b,0,1];
+        }
         else {
             [$gcd, $s, $t] = $this->extended_euclid_gcd($b,$a%$b);
-            $s = $s-(floor($a/$b) * $t);
+            $s = $s - (floor($a/$b) * $t);
+            // echo "gcd=$gcd, t=$t, s=$s<br>";
             return [$gcd,$t,$s];
         }
+        // verify using as + bt = gcd(a,b)
     }
 
-    protected function multiplicative_inverse($e, $r) {
+    public function multiplicative_inverse($e, $r) {
 
-        // TODO ------ getting error
         [$gcd,$s,$t] = $this->extended_euclid_gcd($e,$r);
         if($gcd!=1)
             return 0;
-        else
+        else {
             // if(s<0):
             //     print("s=%d. Since %d is less than 0, s = s(modr), i.e., s=%d."%(s,s,s%r))
             // elif(s>0):
             //     print("s=%d."%(s))
-            return $s%$r;
+            // echo "s=$s, s%r = $s%$r = ".gmp_mod($s,$r);
+            // die(gmp_strval(gmp_mod($s,$r))); //it is s%r
+            return gmp_strval(gmp_mod( (int)$s, (int)$r ));
+        }
     }
     
 
