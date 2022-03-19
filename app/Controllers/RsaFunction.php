@@ -34,7 +34,7 @@ class RsaFunction extends BaseController
             $d = $this->multiplicative_inverse($e,$r);
             $str = str_split($text);
 
-            $public_key = [$e,$n,'asdsssssadfsfsdfaeawefasfcsdcasdfsdfasf'];
+            $public_key = [$e,$n];
             $private_key = [$d,$n];
             
             $enc = array();

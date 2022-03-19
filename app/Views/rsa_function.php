@@ -115,7 +115,7 @@
               <div class="card-body">
                 <h5 class="card-title">Calculations</h5>
                 <h6 class="card-subtitle mt-3 mb-2 text-danger" id="enc_heading">Card subtitle</h6>
-                <p class="card-text" id="enc_calculation">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text" id="dec_calculation">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
             </div>
           </div>
@@ -135,6 +135,15 @@
       console.log(p);
       console.log(q);
       console.log(str);
+
+      $.ajax({
+        url: "/rsa/public/rsafunction/encrypt/"+p+"/"+q+"/"+str,
+        dataType: "json",
+        success: function( result ) {
+          $( "#enc_calculation" ).html( "<strong>" + result['P'] + "</strong>" );
+          console.log(result);
+        }
+      });
     };
     
     const decrypt = () => {
@@ -144,6 +153,14 @@
       console.log(p);
       console.log(q);
       console.log(str);
+
+      $.ajax({
+        url: "/rsa/public/rsafunction/decrypt/"+p+"/"+q+"/"+str,
+        success: function( result ) {
+          // $( "#weather-temp" ).html( "<strong>" + result + "</strong> degrees" );
+          console.log(result);
+        }
+      });
     };
 
     // document.getElementById("submit").addEventListener("click", function (event) {
