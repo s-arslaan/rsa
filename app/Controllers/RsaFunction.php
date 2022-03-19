@@ -40,7 +40,7 @@ class RsaFunction extends BaseController
             $enc = array();
             $m = 0;
             $enc_value = null;
-            foreach ($str as $key => $char) {
+            foreach ($str as $char) {
                 if(ctype_upper($char)) {
                     $m = ord($char)-65;
                     // echo ($m**$e)%$n."  ";
@@ -112,12 +112,15 @@ class RsaFunction extends BaseController
                 return(is_numeric($var));
             });
 
+            // indexing values
+            $values = array_values($values);
+
             $public_key = [$e,$n];
             $private_key = [$d,$n];
             
             $dec_msg = '';
             $m = 0;
-            foreach ($values as $key => $val) {
+            foreach ($values as $val) {
                 if($val==400) {
                     $dec_msg = $dec_msg.' ';
                 }
