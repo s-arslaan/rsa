@@ -147,22 +147,29 @@
           url: "/rsa/public/rsafunction/encrypt/" + p + "/" + q + "/" + str,
           dataType: "json",
           success: function(result) {
-            $("#enc_calculation").html(
-              "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
-              "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
-              "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
-              "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
-              "<br><strong>Encrypted Text = " + result['encrypted_msg'] +
-              "</strong>"
-            );
+
             console.log(result);
 
-            $("#enc_calculation").removeClass('fst-italic');
-            $("#enc_values").prop("value", result['encrypted_msg']);
-            $("#enc_values").removeClass("d-none");
-            $("#enc_copy_btn").removeClass("d-none");
+            if(result.length > 1) {
+              $("#enc_calculation").html(
+                "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
+                "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+                "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+                "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
+                "<br><strong>Encrypted Text = " + result['encrypted_msg'] +
+                "</strong>"
+              );
+  
+              $("#enc_calculation").removeClass('fst-italic');
+              $("#enc_values").prop("value", result['encrypted_msg']);
+              $("#enc_values").removeClass("d-none");
+              $("#enc_copy_btn").removeClass("d-none");
 
-            document.getElementById("enc_values").value = result['encrypted_msg'];
+              // document.getElementById("enc_values").value = result['encrypted_msg'];
+
+            } else {
+              $("#enc_calculation").html(result);
+            }
 
           }
         });
@@ -184,20 +191,27 @@
           url: "/rsa/public/rsafunction/decrypt/" + p + "/" + q + "/" + str,
           dataType: "json",
           success: function(result) {
-            $("#dec_calculation").html(
-              "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
-              "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
-              "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
-              "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
-              "<br><strong>Decrypted Text = " + result['decrypted_msg'] +
-              "</strong>"
-            );
+            
             console.log(result);
+            
+            if(result.length > 1) {
+              $("#dec_calculation").html(
+                "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
+                "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+                "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+                "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
+                "<br><strong>Decrypted Text = " + result['decrypted_msg'] +
+                "</strong>"
+              );
 
-            $("#dec_calculation").removeClass('fst-italic');
-            $("#dec_values").prop("value", result['decrypted_msg']);
-            $("#dec_values").removeClass("d-none");
-            $("#dec_copy_btn").removeClass("d-none");
+              $("#dec_calculation").removeClass('fst-italic');
+              $("#dec_values").prop("value", result['decrypted_msg']);
+              $("#dec_values").removeClass("d-none");
+              $("#dec_copy_btn").removeClass("d-none");
+
+            } else {
+              $("#dec_calculation").html(result);
+            }            
 
           }
         });

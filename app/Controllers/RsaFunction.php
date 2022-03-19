@@ -18,10 +18,10 @@ class RsaFunction extends BaseController
         $output = array();
 
         if(!$this->primeCheck($p) || !$this->primeCheck($q)) {
-            $output[] = "---- Not Prime Number ----";
+            $output[] = "---- P & Q should be Prime Numbers ----";
         }
         else if(abs($p-$q)<5) {
-            $output[] = "---- Choose different Numbers ----";
+            $output[] = "---- Difference between numbers should be greater than 5 ----";
         }
         else {
             
@@ -91,10 +91,10 @@ class RsaFunction extends BaseController
         $output = array();
 
         if(!$this->primeCheck($p) || !$this->primeCheck($q)) {
-            $output[] = "---- Not Prime Number ----";
+            $output[] = "---- P & Q should be Prime Numbers ----";
         }
         else if(abs($p-$q)<5) {
-            $output[] = "---- Choose different Numbers ----";
+            $output[] = "---- Difference between numbers should be greater than 5 ----";
         }
         else {
             
