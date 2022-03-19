@@ -149,8 +149,9 @@
           success: function(result) {
 
             console.log(result);
+            // console.log(Object.keys(result).length);
 
-            if(result.length > 1) {
+            if (Object.keys(result).length > 1) {
               $("#enc_calculation").html(
                 "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
                 "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
@@ -159,7 +160,7 @@
                 "<br><strong>Encrypted Text = " + result['encrypted_msg'] +
                 "</strong>"
               );
-  
+
               $("#enc_calculation").removeClass('fst-italic');
               $("#enc_values").prop("value", result['encrypted_msg']);
               $("#enc_values").removeClass("d-none");
@@ -191,10 +192,10 @@
           url: "/rsa/public/rsafunction/decrypt/" + p + "/" + q + "/" + str,
           dataType: "json",
           success: function(result) {
-            
+
             console.log(result);
-            
-            if(result.length > 1) {
+
+            if (Object.keys(result).length > 1) {
               $("#dec_calculation").html(
                 "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
                 "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
@@ -211,7 +212,7 @@
 
             } else {
               $("#dec_calculation").html(result);
-            }            
+            }
 
           }
         });
