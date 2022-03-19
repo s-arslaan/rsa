@@ -70,9 +70,12 @@
           <div class="col-6 px-5">
             <div class="card border" style="background-color:black;">
               <div class="card-body">
-                <h5 class="card-title">Calculations</h5>
-                <h6 class="card-subtitle mt-3 mb-2 text-danger" id="enc_heading">Card subtitle</h6>
-                <p class="card-text" id="enc_calculation">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <h5 class="card-title text-danger">Calculations</h5>
+                <p class="card-text fst-italic" id="enc_calculation">submit values to see results</p>
+                <div class="input-group">
+                  <input type="text" class="form-control text-white bg-dark d-none" placeholder="" id="enc_values" value="" aria-describedby="enc_copy_btn" disabled>
+                  <button class="btn btn-outline-warning d-none" type="button" id="enc_copy_btn" onclick="copyHandle('enc_values');">Copy Values</button>
+                </div>
               </div>
             </div>
           </div>
@@ -108,14 +111,17 @@
               <label for="string_dec" class="form-label">Enter Values for Decryption</label>
               <input type="text" class="form-control" id="string_dec" placeholder="comma separated values">
             </div>
-            <button class="btn btn-danger mt-3" onclick="decrypt();" id="encrypt">Encrypt!</button>
+            <button class="btn btn-danger mt-3" onclick="decrypt();" id="decrypt">Decrypt!</button>
           </div>
           <div class="col-6 px-5">
             <div class="card border" style="background-color:black;">
               <div class="card-body">
-                <h5 class="card-title">Calculations</h5>
-                <h6 class="card-subtitle mt-3 mb-2 text-danger" id="enc_heading">Card subtitle</h6>
-                <p class="card-text" id="dec_calculation">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <h5 class="card-title text-danger">Calculations</h5>
+                <p class="card-text fst-italic" id="dec_calculation">submit values to see results</p>
+                <div class="input-group">
+                  <input type="text" class="form-control text-white bg-dark d-none" placeholder="" id="dec_values" value="" aria-describedby="dec_copy_btn" disabled>
+                  <button class="btn btn-outline-warning d-none" type="button" id="dec_copy_btn" onclick="copyHandle('dec_values');">Copy Text</button>
+                </div>
               </div>
             </div>
           </div>
@@ -136,16 +142,35 @@
       console.log(q);
       console.log(str);
 
-      $.ajax({
-        url: "/rsa/public/rsafunction/encrypt/"+p+"/"+q+"/"+str,
-        dataType: "json",
-        success: function( result ) {
-          $( "#enc_calculation" ).html( "<strong>" + result['P'] + "</strong>" );
-          console.log(result);
-        }
-      });
+      if (p !== '' & q !== '' & str !== '') {
+        $.ajax({
+          url: "/rsa/public/rsafunction/encrypt/" + p + "/" + q + "/" + str,
+          dataType: "json",
+          success: function(result) {
+            $("#enc_calculation").html(
+              "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
+              "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+              "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+              "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
+              "<br><strong>Encrypted Text = " + result['encrypted_msg'] +
+              "</strong>"
+            );
+            console.log(result);
+
+            $("#enc_calculation").removeClass('fst-italic');
+            $("#enc_values").prop("value", result['encrypted_msg']);
+            $("#enc_values").removeClass("d-none");
+            $("#enc_copy_btn").removeClass("d-none");
+
+            document.getElementById("enc_values").value = result['encrypted_msg'];
+
+          }
+        });
+      } else {
+        alert("Please enter all the required fields")
+      }
     };
-    
+
     const decrypt = () => {
       let p = document.getElementById("p_val_dec").value;
       let q = document.getElementById("q_val_dec").value;
@@ -154,14 +179,39 @@
       console.log(q);
       console.log(str);
 
-      $.ajax({
-        url: "/rsa/public/rsafunction/decrypt/"+p+"/"+q+"/"+str,
-        success: function( result ) {
-          // $( "#weather-temp" ).html( "<strong>" + result + "</strong> degrees" );
-          console.log(result);
-        }
-      });
+      if (p !== '' & q !== '' & str !== '') {
+        $.ajax({
+          url: "/rsa/public/rsafunction/decrypt/" + p + "/" + q + "/" + str,
+          dataType: "json",
+          success: function(result) {
+            $("#dec_calculation").html(
+              "P = " + result['P'] + ", Q = " + result['Q'] + ", message = '" + str + "'" +
+              "<br>RSA Modulus(n) = p x q = " + result['rsa_modulus_n'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+              "<br>E = " + result['e'] + "<br>Eulers Toitent(r) = (p-1) x (q-1) = " + result['eulers_toitent_r'] +
+              "<br>Public Key = " + result['public_key'] + "<br>Private Key = " + result['private_key'] +
+              "<br><strong>Decrypted Text = " + result['decrypted_msg'] +
+              "</strong>"
+            );
+            console.log(result);
+
+            $("#dec_calculation").removeClass('fst-italic');
+            $("#dec_values").prop("value", result['decrypted_msg']);
+            $("#dec_values").removeClass("d-none");
+            $("#dec_copy_btn").removeClass("d-none");
+
+          }
+        });
+      } else {
+        alert("Please enter all the required fields")
+      }
+
     };
+
+    const copyHandle = (id) => {
+      let temp = document.getElementById(id).value;
+      navigator.clipboard.writeText(temp);
+      alert('copied: ' + temp);
+    }
 
     // document.getElementById("submit").addEventListener("click", function (event) {
     //   event.preventDefault();
@@ -170,7 +220,6 @@
     //   console.log(p);
     //   console.log(q);
     // });
-
   </script>
 </body>
 

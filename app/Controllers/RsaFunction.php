@@ -64,16 +64,16 @@ class RsaFunction extends BaseController
                 }
             }
 
-            $output[] = [
+            $output = [
                 "P" => $p,
                 "Q" => $q,
-                "Message" => $str,
-                "RSA modulus(n)" => $n,
-                "Eulers Toitent(r)" => $r,
+                "message" => $str,
+                "rsa_modulus_n" => $n,
+                "eulers_toitent_r" => $r,
                 "e" => $e,
-                "Private Key" => "($d,$n)",
-                "Public Key" => "($e,$n)",
-                "Encrypted Values" => $enc
+                "private_key" => "($d,$n)",
+                "public_key" => "($e,$n)",
+                "encrypted_msg" => $enc
             ];
         }
 
@@ -131,16 +131,16 @@ class RsaFunction extends BaseController
                 }
             }
 
-            $output[] = [
+            $output = [
                 "P" => $p,
                 "Q" => $q,
                 "Values" => $values,
-                "RSA modulus(n)" => $n,
-                "Eulers Toitent(r)" => $r,
+                "rsa_modulus_n" => $n,
+                "eulers_toitent_r" => $r,
                 "e" => $e,
-                "Private Key" => "($d,$n)",
-                "Public Key" => "($e,$n)",
-                "Decrypted_message" => $dec_msg
+                "private_key" => "($d,$n)",
+                "public_key" => "($e,$n)",
+                "decrypted_msg" => $dec_msg
             ];
         }
 
