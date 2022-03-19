@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="row my-5">
-          <div class="col-6">
+          <div class="col-md-6">
             <div class="row">
               <div class="col-6">
                 <div class="mb-3">
@@ -67,7 +67,7 @@
             </div>
             <button class="btn btn-danger mt-3" onclick="encrypt();" id="encrypt">Encrypt!</button>
           </div>
-          <div class="col-6 px-5">
+          <div class="col-md-6 px-5">
             <div class="card border" style="background-color:black;">
               <div class="card-body">
                 <h5 class="card-title text-danger">Calculations</h5>
@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="row my-5">
-          <div class="col-6">
+          <div class="col-md-6">
             <div class="row">
               <div class="col-6">
                 <div class="mb-3">
@@ -113,7 +113,7 @@
             </div>
             <button class="btn btn-danger mt-3" onclick="decrypt();" id="decrypt">Decrypt!</button>
           </div>
-          <div class="col-6 px-5">
+          <div class="col-md-6 px-5">
             <div class="card border" style="background-color:black;">
               <div class="card-body">
                 <h5 class="card-title text-danger">Calculations</h5>
