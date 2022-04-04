@@ -23,7 +23,9 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'http://localhost:8080/';
+    // public $baseURL = 'http://localhost:8080/';
+    // removal of public folder, arslaan
+    public $baseURL = 'http://localhost/rsa/';
 
     /**
      * --------------------------------------------------------------------------
@@ -55,7 +57,11 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $uriProtocol = 'REQUEST_URI';
+    // public $uriProtocol = 'REQUEST_URI';
+    
+    // removal of public folder, arslaan
+    public $uriProtocol = 'PATH_INFO';
+
 
     /**
      * --------------------------------------------------------------------------
