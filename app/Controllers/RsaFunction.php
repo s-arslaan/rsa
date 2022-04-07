@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class RsaFunction extends BaseController
 {
@@ -226,5 +227,15 @@ class RsaFunction extends BaseController
         return $output;
     }
 
+    // Remap is first function called even before index
+    public function _remap($method, $param1 = null, $param2 = null, $param3 = null) {
+        // if($param1 != null && $param2 != null && $param3 != null && ($method == "encrypt" || $method == "decrypt") ) {
+        //     return $this->$method($param1,$param2, $param3);
+        // }
+        if(method_exists($this, $method)) {
+            return $this->$method($param1,$param2,$param3);
+        }
+        throw PageNotFoundException::forPageNotFound();
+    }
 
 }
