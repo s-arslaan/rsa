@@ -6,7 +6,7 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 class RsaFunction extends BaseController
 {
     public function index() {
-        return view('rsa_function');
+        echo view('rsa_function');
     }
     
     public function encrypt($a, $b, $text) {
