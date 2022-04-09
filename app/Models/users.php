@@ -16,4 +16,8 @@ class Users extends Model {
 
         return $users;
     }
+
+    public function addUser() {
+        
+    }
 }
