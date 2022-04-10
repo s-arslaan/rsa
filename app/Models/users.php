@@ -17,6 +17,21 @@ class Users extends Model {
         return $users;
     }
 
+    public function verifyCredentials($email) {
+
+        $builder = $this->db->table($this->DBPrefix.'users');
+        $builder->select('*')->where('email',$email);
+        // $builder->select('password,unique_id,status')->where('email',$data['email']);
+        $res = $builder->get();
+
+        if(count($res->getResultArray()) == 1)  {
+            return $res->getRow();
+        } else {
+            return false;
+        }
+    }
+
+    // used in register
     public function addUser($data) {
         $builder = $this->db->table($this->DBPrefix.'users');
         $builder->insert($data);
@@ -32,13 +47,24 @@ class Users extends Model {
 
         $builder = $this->db->table($this->DBPrefix.'users');
         $builder->select('activation_date,unique_id,status')->where('unique_id',$id);
-        $res = $builder->get()->getRow();
+        $res = $builder->get();
 
-        if(isset($res->unique_id))  {
-            return $res;
+        if(count($res->getResultArray()) == 1)  {
+            return $res->getRow();
         } else {
-            return 'not';
+            return false;
         }
-
+    }
+    
+    public function updateStatus($id) {
+        $builder = $this->db->table($this->DBPrefix.'users');
+        $builder->where('unique_id',$id);
+        $builder->update(['status'=>1]);
+    
+        if($this->db->affectedRows() == 1)  {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

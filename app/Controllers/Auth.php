@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use App\Models\Users;
 use App\Controllers\RsaFunction;
+use DateTime;
 
 /**
  * @property IncomingRequest $request 
@@ -20,10 +21,40 @@ class Auth extends BaseController
         $this->userModel = new Users();
         $this->rsafunc = new RsaFunction();
         $this->session = \Config\Services::session();
+        helper('date');
     }
 
     public function login()
     {
+        if ($this->request->getMethod() == 'post') {
+
+            $email = $this->request->getVar('email', FILTER_SANITIZE_EMAIL);
+            $password = $this->request->getVar('password');
+            $prime1 = 3;
+            $prime2 = 13;
+
+            $t = $this->userModel->verifyCredentials($email);
+
+            $userdata = array(
+                'email' => $email,
+                'password' => md5($password),
+                'prime_no_1' => $prime1,
+                'prime_no_2' => $prime2,
+            );
+            // die(print_r($userdata));
+            
+            if($this->userModel->verifyCredentials($userdata)) {
+                
+                $this->session->setTempdata('success','User Registered');
+                die(print_r($t));
+
+                // return redirect()->to(current_url());
+
+            } else {
+                $this->session->setTempdata('error','Something went wrong');
+                return redirect()->to(current_url());
+            }
+        }
 
         $data = array(
             'title' => 'RSA | Login',
@@ -80,8 +111,23 @@ class Auth extends BaseController
     public function activate($unique_id = null) {
         $data = [];
         if(!empty($unique_id)) {
-            $data = $this->userModel->verifyUniqueID($unique_id);
+            $userdata = $this->userModel->verifyUniqueID($unique_id);
             // die(print_r($data));
+            if($userdata) {
+                if($this->isLinkValid($userdata->activation_date)) {
+                    if($userdata->status == 0) {
+                        if($this->userModel->updateStatus($unique_id)) {
+                            $data['success'] = 'Email verified successfully!';
+                        }
+                    } else {
+                        $data['success'] = 'Email is already verified!';
+                    }
+                } else {
+                    $data['error'] = 'Sorry! Link Expired!';
+                }
+            } else {
+                $data['error'] = 'Invalid Link!';
+            }
         }
         else {
             $data['error'] = 'Sorry! Unable to process request!';
@@ -89,18 +135,22 @@ class Auth extends BaseController
         return view("activate",$data);
     }
 
+    public function isLinkValid($regTime) {
+        $currTime = now();
+        $diffTime = (int)$currTime - (int)strtotime($regTime);
+        if($diffTime < 3600) {
+            // if time is less than 1 hour
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // only login/register is allowed
     public function _remap($method, $param = null)
     {
         if (method_exists($this, $method)) {
-            
-            if ($method == "register") {
-                return $this->$method();
-            } else if ($method == "login") {
-                return $this->$method();
-            } else if ($method == "activate") {
-                return $this->$method($param);
-            }
+            return $this->$method($param);
         }
         throw PageNotFoundException::forPageNotFound();
     }
