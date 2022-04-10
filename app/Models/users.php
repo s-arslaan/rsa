@@ -17,7 +17,14 @@ class Users extends Model {
         return $users;
     }
 
-    public function addUser() {
-        
+    public function addUser($data) {
+        $builder = $this->db->table($this->DBPrefix.'users');
+        $builder->insert($data);
+
+        if($this->db->affectedRows() == 1) {
+            return True;
+        } else {
+            return False;
+        }
     }
 }

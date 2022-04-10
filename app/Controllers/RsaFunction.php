@@ -9,7 +9,7 @@ class RsaFunction extends BaseController
         echo view('rsa_function');
     }
     
-    public function encrypt($a, $b, $text) {
+    public function encrypt($a, $b, $text, $json_output = False) {
         
         // smaller
         $p = $a > $b ? $b: $a;
@@ -78,8 +78,12 @@ class RsaFunction extends BaseController
             ];
         }
 
-        header('Content-Type: application/json');
-        return json_encode( $output );
+        if($json_output == True) {
+            header('Content-Type: application/json');
+            return json_encode( $output );
+        } else {
+            return implode(',',$enc);
+        }
     }
     
     public function decrypt($a, $b, $text) {
@@ -145,8 +149,9 @@ class RsaFunction extends BaseController
             ];
         }
 
-        header('Content-Type: application/json');
-        return json_encode( $output );
+        // header('Content-Type: application/json');
+        // return json_encode( $output );
+        return $dec_msg;
     }
 
     protected function primeCheck($num) {
