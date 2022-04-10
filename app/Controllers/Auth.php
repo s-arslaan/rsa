@@ -77,6 +77,18 @@ class Auth extends BaseController
         return view('register', $data);
     }
 
+    public function activate($unique_id = null) {
+        $data = [];
+        if(!empty($unique_id)) {
+            $data = $this->userModel->verifyUniqueID($unique_id);
+            // die(print_r($data));
+        }
+        else {
+            $data['error'] = 'Sorry! Unable to process request!';
+        }
+        return view("activate",$data);
+    }
+
     // only login/register is allowed
     public function _remap($method, $param = null)
     {

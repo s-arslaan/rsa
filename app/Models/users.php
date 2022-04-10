@@ -27,4 +27,18 @@ class Users extends Model {
             return False;
         }
     }
+
+    public function verifyUniqueID($id) {
+
+        $builder = $this->db->table($this->DBPrefix.'users');
+        $builder->select('activation_date,unique_id,status')->where('unique_id',$id);
+        $res = $builder->get()->getRow();
+
+        if(isset($res->unique_id))  {
+            return $res;
+        } else {
+            return 'not';
+        }
+
+    }
 }
