@@ -30,6 +30,7 @@
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="<?= base_url(); ?>/auth/register">Register</a></li>
                             <li><a class="dropdown-item" href="<?= base_url(); ?>/auth/login">Login</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url(); ?>/auth/logout">Logout</a></li>
                         </ul>
                     </li>
                 </ul>

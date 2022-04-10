@@ -144,6 +144,12 @@ class Auth extends BaseController
         return view("activate",$data);
     }
 
+    public function logout() {
+        session()->remove('logged_user');
+        session()->destroy();
+        return redirect()->to("./auth/login");
+    }
+
     public function isLinkValid($regTime) {
         $currTime = now();
         $diffTime = (int)$currTime - (int)strtotime($regTime);
