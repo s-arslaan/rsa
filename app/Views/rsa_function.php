@@ -144,7 +144,7 @@
 
       if (p !== '' & q !== '' & str !== '') {
         $.ajax({
-          url: "/rsa/rsafunction/encrypt/" + p + "/" + q + "/" + str,
+          url: "/rsa/rsafunction/encrypt/" + p + "/" + q + "/" + str + "/true",
           dataType: "json",
           success: function(result) {
 
@@ -189,7 +189,7 @@
 
       if (p !== '' & q !== '' & str !== '') {
         $.ajax({
-          url: "/rsa/rsafunction/decrypt/" + p + "/" + q + "/" + str,
+          url: "/rsa/rsafunction/decrypt/" + p + "/" + q + "/" + str + "/true",
           dataType: "json",
           success: function(result) {
 

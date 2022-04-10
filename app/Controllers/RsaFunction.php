@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use phpDocumentor\Reflection\PseudoTypes\False_;
 
 class RsaFunction extends BaseController
 {
@@ -86,7 +87,7 @@ class RsaFunction extends BaseController
         }
     }
     
-    public function decrypt($a, $b, $text) {
+    public function decrypt($a, $b, $text, $json_output = False ) {
 
         // smaller
         $p = $a > $b ? $b: $a;
@@ -149,9 +150,12 @@ class RsaFunction extends BaseController
             ];
         }
 
-        // header('Content-Type: application/json');
-        // return json_encode( $output );
-        return $dec_msg;
+        if($json_output == True) {
+            header('Content-Type: application/json');
+            return json_encode( $output );
+        } else {
+            return $dec_msg;
+        }
     }
 
     protected function primeCheck($num) {
@@ -233,12 +237,12 @@ class RsaFunction extends BaseController
     }
 
     // Remap is first function called even before index
-    public function _remap($method, $param1 = null, $param2 = null, $param3 = null) {
+    public function _remap($method, $param1 = null, $param2 = null, $param3 = null, $param4 = null) {
         // if($param1 != null && $param2 != null && $param3 != null && ($method == "encrypt" || $method == "decrypt") ) {
         //     return $this->$method($param1,$param2, $param3);
         // }
         if(method_exists($this, $method)) {
-            return $this->$method($param1,$param2,$param3);
+            return $this->$method($param1,$param2,$param3,$param4);
         }
         throw PageNotFoundException::forPageNotFound();
     }
