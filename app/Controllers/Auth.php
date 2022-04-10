@@ -39,7 +39,8 @@ class Auth extends BaseController
 
                     if($userdata->status == 1) {
 
-                        $this->session->setTempdata('success','Login Successful!');
+                        $this->session->set('logged_user',$userdata->unique_id);
+                        $this->session->setTempdata('success','Welcome '.strtoupper($userdata->name));
                         return redirect()->to(base_url());
             
                     } else {
