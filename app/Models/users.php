@@ -17,21 +17,20 @@ class Users extends Model {
         return $users;
     }
 
-    public function verifyCredentials($email) {
+    public function checkEmail($email) {
 
         $builder = $this->db->table($this->DBPrefix.'users');
         $builder->select('*')->where('email',$email);
-        // $builder->select('password,unique_id,status')->where('email',$data['email']);
+        // $builder->select('password,unique_id,status')->where('email',$email);
         $res = $builder->get();
 
-        if(count($res->getResultArray()) == 1)  {
+        if(count($res->getResultArray()) != 0)  {
             return $res->getRow();
         } else {
             return false;
         }
     }
 
-    // used in register
     public function addUser($data) {
         $builder = $this->db->table($this->DBPrefix.'users');
         $builder->insert($data);

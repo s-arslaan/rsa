@@ -14,12 +14,12 @@ use DateTime;
 class Auth extends BaseController
 {
     public $userModel;
-    public $rsafunc;
+    public $rsaFunction;
     public $session;
     public function __construct()
     {
         $this->userModel = new Users();
-        $this->rsafunc = new RsaFunction();
+        $this->rsaFunction = new RsaFunction();
         $this->session = \Config\Services::session();
         helper('date');
     }
@@ -29,31 +29,26 @@ class Auth extends BaseController
         if ($this->request->getMethod() == 'post') {
 
             $email = $this->request->getVar('email', FILTER_SANITIZE_EMAIL);
-            $password = $this->request->getVar('password');
-            $prime1 = 3;
-            $prime2 = 13;
 
-            $t = $this->userModel->verifyCredentials($email);
+            $userdata = $this->userModel->checkEmail($email);
 
-            $userdata = array(
-                'email' => $email,
-                'password' => md5($password),
-                'prime_no_1' => $prime1,
-                'prime_no_2' => $prime2,
-            );
-            // die(print_r($userdata));
+            if($userdata) {
+                $raw_password = $this->rsaFunction->encrypt($userdata->prime_no_1, $userdata->prime_no_2, $this->request->getVar('password'));
             
-            if($this->userModel->verifyCredentials($userdata)) {
-                
-                $this->session->setTempdata('success','User Registered');
-                die(print_r($t));
+                if($userdata->password === md5($raw_password)) {
 
-                // return redirect()->to(current_url());
-
+                    $this->session->setTempdata('success','Login Successful!');
+                    return redirect()->to(current_url());
+        
+                } else {
+                    $this->session->setTempdata('error','Incorrect email or password');
+                    return redirect()->to(current_url());
+                }
             } else {
-                $this->session->setTempdata('error','Something went wrong');
+                $this->session->setTempdata('error','Incorrect email or password');
                 return redirect()->to(current_url());
             }
+                            
         }
 
         $data = array(
@@ -72,7 +67,7 @@ class Auth extends BaseController
             $prime2 = 13;
             $name = htmlentities($this->request->getVar('name'));
             $email = $this->request->getVar('email', FILTER_SANITIZE_EMAIL);
-            $password = $this->rsafunc->encrypt($prime1, $prime2, $this->request->getVar('password'));
+            $password = $this->rsaFunction->encrypt($prime1, $prime2, $this->request->getVar('password'));
             $mobile = $this->request->getVar('mobile');
             $unique_id = md5(str_shuffle($name.time()));
 
@@ -87,16 +82,22 @@ class Auth extends BaseController
                 'unique_id' => $unique_id,
             );
             // die(print_r($userdata));
-            
-            if($this->userModel->addUser($userdata)) {
-                // $subject = 'RSA GNU | Account Activation';
-                // $body = "Hi $name,<br>Thanks for creating an account with us. Please activate your account.<a href=\"".base_url()."/auth/activate/$unique_id\" target='_blank'>Activate Now</a>";
 
-                $this->session->setTempdata('success','User Registered');
-                return redirect()->to(current_url());
+            if($this->userModel->checkEmail($email) == false) {
 
+                if($this->userModel->addUser($userdata)) {
+                    // $subject = 'RSA GNU | Account Activation';
+                    // $body = "Hi $name,<br>Thanks for creating an account with us. Please activate your account.<a href=\"".base_url()."/auth/activate/$unique_id\" target='_blank'>Activate Now</a>";
+
+                    $this->session->setTempdata('success','User Registered');
+                    return redirect()->to(current_url());
+
+                } else {
+                    $this->session->setTempdata('error','Something went wrong');
+                    return redirect()->to(current_url());
+                }
             } else {
-                $this->session->setTempdata('error','Something went wrong');
+                $this->session->setTempdata('error','Email already exists!');
                 return redirect()->to(current_url());
             }
         }
