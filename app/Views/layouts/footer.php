@@ -1,4 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
 <!-- Footer -->
 <footer class="text-center text-lg-start bg-light text-muted">
@@ -127,5 +126,24 @@
 </footer>
 <!-- Footer -->
 
+<!-- scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+  <script>
+      <?php $page_session = \Config\Services::session(); ?>
+      <?php if ($page_session->getTempdata('success')) : ?>
+          toastr.success(<?= "'" . $page_session->getTempdata('success') . "'"; ?>);
+          <?php $page_session->removeTempdata('success'); ?>
+      <?php endif; ?>
+
+      <?php if ($page_session->getTempdata('error')) : ?>
+          toastr.error(<?= "'" . $page_session->getTempdata('error') . "'"; ?>);
+          <?php $page_session->removeTempdata('error'); ?>
+      <?php endif; ?>
+
+      toastr.options.timeOut = 2000;
+      toastr.options.extendedTimeOut = 1000;
+  </script>
 </body>
 </html>

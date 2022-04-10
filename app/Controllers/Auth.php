@@ -40,13 +40,13 @@ class Auth extends BaseController
                     if($userdata->status == 1) {
 
                         $this->session->setTempdata('success','Login Successful!');
-                        return redirect()->to(current_url());
+                        return redirect()->to(base_url());
             
                     } else {
                         $this->session->setTempdata('error','Please verify your email');
                         return redirect()->to(current_url());
                     }
-                    
+
                 } else {
                     $this->session->setTempdata('error','Incorrect email or password');
                     return redirect()->to(current_url());
